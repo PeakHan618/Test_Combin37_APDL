@@ -1,4 +1,4 @@
-finish
+ï»¿finish
 /clear
 /prep7
 
@@ -17,15 +17,17 @@ keyopt,1,3,1 	! Freedom UX
 keyopt,1,4,1 	! ON-OFF range behavior, choice 1, Unique ranges
 keyopt,1,5,1	! ON-OFF position behavior, ON-OFF-ON if unique
 keyopt,1,6,2	! Real constants used for RVMOD function, Use DAMP
-keyopt,1,9,0 	! Method to define nonlinear behavior:1-Real constants modified by user subroutine USERRC
-
+keyopt,1,9,0 	! Method to define nonlinear behavior:0-Use RVMOD expression for real constant modifications
 
 ! Real constants of element 1, combin37
 	! no.1,Spring stiffness
 	! no.2,Damping coefficient
 	! no.9,First scalar in RVMOD equation
 	! no.10,First exponent in RVMOD equation
-r,1,k0,cv1,,,,,,,cv1,-0.6     !F=Cv^0.4
+!,1,k0,,,,,,,,cv1,-0.6     !F=Cv^0.4
+r,1,k0,0,0,0,0,0,   
+rmore,0,0,cv1,-0.6,0,0,0 
+rmore,0,0
 
 ! Real constants of element 2, mass21
 r,2,m0
@@ -50,7 +52,7 @@ e,2
 d,1,all		
 d,2,uy			
 
-!Ë²Ì¬Çó½â
+!Ë²Ì¬Transit analysis
 /solu
 antype,trans
 kbc,0
@@ -60,6 +62,8 @@ betad,0.0031673
 allsel
 *do,i,1,400,1
         time,0.01*i
+		autots,on
+		nsubst,5		
         f,2,fx,200*sin(2*3.1415926*2*0.01*i)  
         allsel
         solve
@@ -67,5 +71,6 @@ allsel
 
 /post26
 numvar,100
-nsol,2,2,A,x, AZ_n1
+nsol,2,2,U,x,UX_2
+RFORCE,3,1,F,X,FX_3
 PLVAR,2
