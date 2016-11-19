@@ -2,37 +2,53 @@ finish
 /clear
 /prep7
 
-! 参数设置
-! 单自由度质量-阻尼系统
-m0=200						! 质量
-k0=4*acos(-1)**2*800		! 刚度
-cv1=2*m0*sqrt(k0/m0)*0.4
-et,1,combin37
-et,2,mass21,,,4
+! Parameter settings
+! Single DOF mass-spring-damper system 
+m0=200						! Mass
+k0=4*acos(-1)**2*800		! Stiffness
+cv1=2*m0*sqrt(k0/m0)*0.4	! WHAT IS THIS????
+et,1,combin37				! Damper element
+et,2,mass21,,,4				! Mass element, 2-D mass without rotary inertia
 
-keyopt,1,1,2 !控制值对时间的一次导数，速度
+! Key options
+keyopt,1,1,2 	! CPAR, Choice 2:Control on first derivative of value with respect to time
 !keyopt,1,2,1
-keyopt,1,3,1 !UX自由度
-keyopt,1,4,1 
-keyopt,1,5,1 
-keyopt,1,6,2
-keyopt,1,9,0 
+keyopt,1,3,1 	! Freedom UX
+keyopt,1,4,1 	! ON-OFF range behavior, choice 1, Unique ranges
+keyopt,1,5,1	! ON-OFF position behavior, ON-OFF-ON if unique
+keyopt,1,6,2	! Real constants used for RVMOD function, Use DAMP
+keyopt,1,9,0 	! Method to define nonlinear behavior:1-Real constants modified by user subroutine USERRC
 
+
+! Real constants of element 1, combin37
+	! no.1,Spring stiffness
+	! no.2,Damping coefficient
+	! no.9,First scalar in RVMOD equation
+	! no.10,First exponent in RVMOD equation
 r,1,k0,cv1,,,,,,,cv1,-0.6     !F=Cv^0.4
+
+! Real constants of element 2, mass21
 r,2,m0
+
+
+! Nodes
 n,1
 n,2,1.0
 
+! Generate elements by nodes, mesh element 
+! Spring-Damper
 type,1
 real,1
 e,1,2,2
 
+! Mass
 type,2
 real,2
 e,2
 
-d,1,all
-d,2,uy
+! Set constricts at node 1 and node 2
+d,1,all		
+d,2,uy			
 
 !瞬态求解
 /solu
